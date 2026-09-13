@@ -1,4 +1,5 @@
 import json
+import os
 import tempfile
 import time
 import unittest
@@ -45,6 +46,9 @@ class CollectorTests(unittest.TestCase):
                 {"type": "response_item", "timestamp": "2020-01-01T00:00:00Z", "payload": {"type": "message", "role": "user", "content": [{"text": "old"}]}},
                 {"type": "response_item", "timestamp": "2030-01-01T00:00:00Z", "payload": {"type": "message", "role": "user", "content": [{"text": "new"}]}},
             ]
-            (root / "session.jsonl").write_text("\n".join(json.dumps(row) for row in events), encoding="utf-8")
-            records = list(collect_codex(root, time.time(), [root], False))
+            session_file = root / "session.jsonl"
+            session_file.write_text("\n".join(json.dumps(row) for row in events), encoding="utf-8")
+            cursor = time.time()
+            os.utime(session_file, (cursor + 1, cursor + 1))
+            records = list(collect_codex(root, cursor, [root], False))
             self.assertEqual(["new"], [record.text for record in records])
