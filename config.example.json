@@ -1,0 +1,25 @@
+{
+  "version": 1,
+  "sources": {
+    "codex": {"enabled": true, "roots": ["~/.codex/sessions"]},
+    "antigravity": {
+      "enabled": true,
+      "artifact_roots": ["~/.gemini/antigravity/brain"],
+      "conversation_roots": ["~/.gemini/antigravity/conversations"]
+    },
+    "exports": {"enabled": true, "roots": []}
+  },
+  "scope": {"workspace_roots": [], "include_all_codex_projects": false},
+  "evidence": {
+    "minimum_signal_score": 6,
+    "minimum_independent_records": 2,
+    "maximum_excerpt_chars": 800
+  },
+  "evolution": {"generator": "codex", "timeout_seconds": 1200},
+  "sync": {
+    "mode": "pull_request",
+    "repository": "cnproduct/renwork-smart-skills-creator",
+    "remote": "origin",
+    "branch_prefix": "evolution/"
+  }
+}

@@ -1,0 +1,4 @@
+interface:
+  display_name: "RenWork Smart Skills Creator"
+  short_description: "Turn agent conversations into tested, evolving skills"
+  default_prompt: "Distill this completed workflow into an evidence-backed Agent Skill, validate it, and prepare a safe GitHub update."

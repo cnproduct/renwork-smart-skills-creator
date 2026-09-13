@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["status", "summary", "evidence_hashes", "changed_files", "tests"],
+  "properties": {
+    "status": {"enum": ["changed", "no_change", "blocked"]},
+    "summary": {"type": "string"},
+    "evidence_hashes": {"type": "array", "items": {"type": "string"}},
+    "changed_files": {"type": "array", "items": {"type": "string"}},
+    "tests": {"type": "array", "items": {"type": "string"}}
+  },
+  "additionalProperties": false
+}
