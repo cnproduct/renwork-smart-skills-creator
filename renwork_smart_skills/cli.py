@@ -214,7 +214,7 @@ def install_launch_agent(config_path: Path, interval_hours: int) -> dict:
 <key>RunAtLoad</key><false/>
 <key>StandardOutPath</key><string>{logs / 'launchd.out.log'}</string>
 <key>StandardErrorPath</key><string>{logs / 'launchd.err.log'}</string>
-<key>EnvironmentVariables</key><dict><key>PATH</key><string>/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin</string></dict>
+<key>EnvironmentVariables</key><dict><key>PATH</key><string>{Path.home() / '.local' / 'bin'}:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin</string></dict>
 </dict></plist>
 '''
     plist.parent.mkdir(parents=True, exist_ok=True)

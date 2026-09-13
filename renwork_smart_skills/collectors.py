@@ -36,6 +36,13 @@ def _mtime_iso(source_file: Path) -> str:
     return datetime.fromtimestamp(source_file.stat().st_mtime, timezone.utc).isoformat()
 
 
+def _timestamp_epoch(value: str, fallback: float) -> float:
+    try:
+        return datetime.fromisoformat(value.replace("Z", "+00:00")).timestamp()
+    except (TypeError, ValueError):
+        return fallback
+
+
 def _extract_message_text(payload: dict) -> str:
     content = payload.get("content", "")
     if isinstance(content, str):
@@ -93,6 +100,8 @@ def collect_codex(root: Path, since_epoch: float, workspace_roots: list[Path], i
             except (OSError, RuntimeError):
                 continue
         for role, timestamp, text in buffered:
+            if _timestamp_epoch(timestamp, source_file.stat().st_mtime) <= since_epoch:
+                continue
             safe = redact(text, home)
             if safe:
                 raw = f"codex\0{session}\0{role}\0{timestamp}\0{safe}".encode()

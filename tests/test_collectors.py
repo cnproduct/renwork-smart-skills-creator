@@ -36,3 +36,15 @@ class CollectorTests(unittest.TestCase):
             records, inventory = collect_antigravity(root / "brain", conversations, 0)
             self.assertEqual(1, len(records))
             self.assertEqual(1, inventory["opaque_pb_files"])
+
+    def test_codex_cursor_filters_old_messages_inside_new_file(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            events = [
+                {"type": "session_meta", "payload": {"id": "s1", "cwd": str(root)}},
+                {"type": "response_item", "timestamp": "2020-01-01T00:00:00Z", "payload": {"type": "message", "role": "user", "content": [{"text": "old"}]}},
+                {"type": "response_item", "timestamp": "2030-01-01T00:00:00Z", "payload": {"type": "message", "role": "user", "content": [{"text": "new"}]}},
+            ]
+            (root / "session.jsonl").write_text("\n".join(json.dumps(row) for row in events), encoding="utf-8")
+            records = list(collect_codex(root, time.time(), [root], False))
+            self.assertEqual(["new"], [record.text for record in records])
