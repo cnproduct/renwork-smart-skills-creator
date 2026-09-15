@@ -21,7 +21,7 @@ def redact(text: str, home: Path | None = None) -> str:
     """Return a normalized, secret-reduced excerpt suitable for local evidence."""
     value = text.replace("\x00", " ")
     if home:
-        value = value.replace(str(home), "~")
+        value = value.replace(str(home), "~").replace(home.as_posix(), "~")
     for pattern, replacement in _PATTERNS:
         value = pattern.sub(replacement, value)
     return re.sub(r"[ \t]+", " ", value).strip()

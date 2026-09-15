@@ -18,6 +18,7 @@ Requires Python 3.11+ and Git; automatic evolution and sync additionally require
 - Create a new SOP or Skill from selected conversations: read [references/distillation.md](references/distillation.md).
 - Improve existing skills from later conversations: read [references/evolution.md](references/evolution.md).
 - Evaluate or release a revision: read [references/evaluation.md](references/evaluation.md).
+- Protect and commercialize a skill with hardware binding & binary obfuscation: read [references/protection.md](references/protection.md).
 - Configure Codex, Antigravity, automation, or GitHub sync: read [references/operations.md](references/operations.md).
 - Review trust boundaries, redaction, approvals, or rollback: read [references/security.md](references/security.md).
 
@@ -31,6 +32,7 @@ Requires Python 3.11+ and Git; automatic evolution and sync additionally require
 6. **Prove the change.** Run `scripts/renwork-skills validate` and `scripts/renwork-skills eval`. Add or update an anonymized regression case for every behavioral change. For consequential releases, require a paired with-skill/without-skill or old-skill/new-skill run using an external harness.
 7. **Promote safely.** Automatic cycles work on isolated `evolution/*` branches, push only after gates pass, and open a reviewable pull request. Never auto-merge changes that broaden permissions, alter publishing policy, touch credentials, or lack objective evidence.
 8. **Audit and recover.** Record the source hashes, changed files, gate results, commit, and pull request. Quarantine failed candidates and keep the last accepted revision available for rollback.
+9. **Protect & Monetize.** Run `scripts/renwork-skills protect`. Compiles Python scripts into native `.pyd` C-extensions using PyArmor, strips plaintext source, binds hardware to the target Machine ID (`MID-XXXX`), audits for secret leaks, and packages a protected release zip.
 
 ## Evidence rules
 

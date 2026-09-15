@@ -68,9 +68,20 @@ scripts/renwork-skills validate
 scripts/renwork-skills eval
 scripts/renwork-skills cycle --apply --sync
 scripts/renwork-skills install --workspace-root "/path/to/workspace"
+scripts/renwork-skills machine-id
+scripts/renwork-skills issue-license --key admin_private_key.pem --mid "<MID>" --name "Customer"
+scripts/renwork-skills protect --skill path/to/skill --output dist
 ```
 
-See [references/operations.md](references/operations.md) for configuration and [references/evaluation.md](references/evaluation.md) for the distinction between fast deterministic gates and release-grade causal evaluation.
+## Commercial Protection & Anti-Piracy (Zero-Trust Guard)
+
+All skills authored or packaged by RenWork can be automatically protected against prompt and code theft:
+- **Hardware Binding**: Locks execution to a physical machine ID (`MID-XXXX-XXXX-XXXX-XXXX`).
+- **Binary Obfuscation**: Compiles Python source code to native `.pyd` C-extensions using PyArmor and strips all plaintext sources.
+- **Store Mutex Locking**: Enforces single-window 1:1 tenant isolation and maximum 1-switch quota (`switch_count <= 1`) to eliminate carousel piracy.
+- **Serverless Cloud Gateway**: Cloudflare Workers + KV for real-time remote banning and usage analytics, with resilient offline grace fallback.
+
+See [references/protection.md](references/protection.md) for full operational instructions.
 
 ## Privacy and governance
 

@@ -16,6 +16,7 @@ from .collectors import atomic_write_json, collect_antigravity, collect_codex, c
 from .evaluation import compare, export_paired_manifest
 from .evolution import evolve, lock
 from .mining import mine
+from .protection import get_machine_id, issue_license, protect_skill, verify_license
 from .validation import validate_repo, write_report
 
 
@@ -236,6 +237,30 @@ def uninstall_automation_command(_: argparse.Namespace) -> dict:
     return result
 
 
+def protect_command(args: argparse.Namespace) -> dict:
+    skill_path = Path(args.skill).expanduser().resolve()
+    out_dir = Path(args.output).expanduser().resolve() if args.output else skill_path / "dist"
+    pub_key = Path(args.public_key).expanduser().resolve() if args.public_key else None
+    res = protect_skill(skill_path, out_dir, package_name=args.name, public_key_path=pub_key)
+    print(json.dumps(res, ensure_ascii=False, indent=2))
+    return res
+
+
+def machine_id_command(_: argparse.Namespace) -> dict:
+    mid = get_machine_id()
+    res = {"machine_id": mid}
+    print(json.dumps(res, indent=2))
+    return res
+
+
+def issue_license_command(args: argparse.Namespace) -> dict:
+    priv_key = Path(args.key).expanduser().resolve()
+    token = issue_license(priv_key, args.mid, args.name, days=args.days, max_sessions=args.max_sessions)
+    res = {"license_key": token, "mid": args.mid, "name": args.name, "days": args.days}
+    print(json.dumps(res, ensure_ascii=False, indent=2))
+    return res
+
+
 def parser() -> argparse.ArgumentParser:
     cli = argparse.ArgumentParser(prog="renwork-skills", description="Evidence-driven Agent Skill lifecycle")
     sub = cli.add_subparsers(dest="command", required=True)
@@ -262,6 +287,21 @@ def parser() -> argparse.ArgumentParser:
     cycle.add_argument("--apply", action="store_true")
     cycle.add_argument("--sync", action="store_true")
     cycle.set_defaults(func=cycle_command)
+    protect = sub.add_parser("protect", help="Compile and protect a skill with binary obfuscation and leak audit")
+    protect.add_argument("--skill", required=True, help="Path to the skill directory")
+    protect.add_argument("--output", help="Directory for protected release artifacts")
+    protect.add_argument("--name", help="Custom package name")
+    protect.add_argument("--public-key", help="Path to public_key.pem to bundle")
+    protect.set_defaults(func=protect_command)
+    mid_parser = sub.add_parser("machine-id", help="Retrieve local hardware machine fingerprint (MID)")
+    mid_parser.set_defaults(func=machine_id_command)
+    issue = sub.add_parser("issue-license", help="Issue an RSA-signed commercial license for a client MID")
+    issue.add_argument("--key", required=True, help="Path to admin_private_key.pem")
+    issue.add_argument("--mid", required=True, help="Client hardware Machine ID")
+    issue.add_argument("--name", required=True, help="Client name")
+    issue.add_argument("--days", type=int, default=365, help="Validity in days")
+    issue.add_argument("--max-sessions", type=int, default=1, help="Max concurrent sessions")
+    issue.set_defaults(func=issue_license_command)
     doctor = sub.add_parser("doctor")
     doctor.add_argument("--config", type=Path)
     doctor.set_defaults(func=doctor_command)

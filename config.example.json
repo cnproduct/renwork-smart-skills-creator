@@ -21,5 +21,10 @@
     "repository": "cnproduct/renwork-smart-skills-creator",
     "remote": "origin",
     "branch_prefix": "evolution/"
+  },
+  "protection": {
+    "default_enabled": true,
+    "require_hardware_mid": true,
+    "obfuscate_binaries": true
   }
 }
